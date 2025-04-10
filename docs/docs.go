@@ -364,10 +364,10 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "localhost:8080",
+	Version:          "1.1",
+	Host:             "https://go-ideas-api.onrender.com",
 	BasePath:         "/v1",
-	Schemes:          []string{"http"},
+	Schemes:          []string{"https"},
 	Title:            "Ideas API",
 	Description:      "API for managing project ideas",
 	InfoInstanceName: "swagger",

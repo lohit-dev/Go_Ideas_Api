@@ -1,15 +1,15 @@
 {
     "schemes": [
-        "http"
+        "https"
     ],
     "swagger": "2.0",
     "info": {
         "description": "API for managing project ideas",
         "title": "Ideas API",
         "contact": {},
-        "version": "1.0"
+        "version": "1.1"
     },
-    "host": "localhost:8080",
+    "host": "https://go-ideas-api.onrender.com",
     "basePath": "/v1",
     "paths": {
         "/idea": {
