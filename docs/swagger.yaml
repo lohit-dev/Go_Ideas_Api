@@ -1,0 +1,255 @@
+basePath: /v1
+definitions:
+  model.CreateIdeaPayload:
+    properties:
+      description:
+        type: string
+      status:
+        $ref: '#/definitions/model.RequestStatus'
+      tags:
+        items:
+          type: string
+        type: array
+      techStack:
+        items:
+          $ref: '#/definitions/model.TechStack'
+        type: array
+      title:
+        type: string
+    type: object
+  model.Idea:
+    properties:
+      createdAt:
+        description: |-
+          Votes       int           `json:"votes"`       // Number of user votes/interest
+          RequestedBy     string        `json:"requestedBy"`     // Username or email of requester
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      status:
+        $ref: '#/definitions/model.RequestStatus'
+      tags:
+        items:
+          type: string
+        type: array
+      techStack:
+        items:
+          $ref: '#/definitions/model.TechStack'
+        type: array
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  model.RequestStatus:
+    description: Status of the idea request
+    enum:
+    - requested
+    - reviewing
+    - planned
+    - in-progress
+    - published
+    - rejected
+    type: string
+    x-enum-varnames:
+    - Requested
+    - Reviewing
+    - Planned
+    - InProgress
+    - Published
+    - Rejected
+  model.TechStack:
+    description: Technology stack for the idea
+    enum:
+    - Rust
+    - Go
+    - Next
+    - React
+    - Axum
+    - Postgres
+    - MySQL
+    - Docker
+    - ActixWeb
+    - ChiRouter
+    - Node
+    type: string
+    x-enum-varnames:
+    - Rust
+    - Go
+    - Next
+    - React
+    - Axum
+    - Postgres
+    - MySQL
+    - Docker
+    - ActixWeb
+    - ChiRouter
+    - Node
+  model.UpdateIdeaPayload:
+    properties:
+      description:
+        type: string
+      status:
+        $ref: '#/definitions/model.RequestStatus'
+      tags:
+        items:
+          type: string
+        type: array
+      techStack:
+        items:
+          $ref: '#/definitions/model.TechStack'
+        type: array
+      title:
+        description: Pointer so we can check for null values
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for managing project ideas
+  title: Ideas API
+  version: "1.0"
+paths:
+  /idea:
+    get:
+      description: Retrieves all ideas from the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Idea'
+            type: array
+        "500":
+          description: Server error
+          schema: {}
+      summary: Get all ideas
+      tags:
+      - Ideas
+    post:
+      consumes:
+      - application/json
+      description: Creates a new idea in the system
+      parameters:
+      - description: Idea object
+        in: body
+        name: idea
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateIdeaPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Result message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request - invalid payload
+          schema: {}
+        "500":
+          description: Server error
+          schema: {}
+      summary: Create a new idea
+      tags:
+      - Ideas
+  /idea/{id}:
+    delete:
+      description: Removes an idea from the system
+      parameters:
+      - description: Idea ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid ID format
+          schema: {}
+        "404":
+          description: Idea not found
+          schema: {}
+        "500":
+          description: Server error
+          schema: {}
+      summary: Delete an idea
+      tags:
+      - Ideas
+    get:
+      description: Retrieves a single idea by its ID
+      parameters:
+      - description: Idea ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Idea'
+        "400":
+          description: Invalid ID format
+          schema: {}
+        "404":
+          description: Idea not found
+          schema: {}
+      summary: Get a specific idea by ID
+      tags:
+      - Ideas
+    post:
+      consumes:
+      - application/json
+      description: Updates an idea's information in the system
+      parameters:
+      - description: Idea ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated idea object
+        in: body
+        name: idea
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateIdeaPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request or ID format
+          schema: {}
+        "404":
+          description: Idea not found
+          schema: {}
+        "500":
+          description: Server error
+          schema: {}
+      summary: Update an existing idea
+      tags:
+      - Ideas
+schemes:
+- http
+swagger: "2.0"

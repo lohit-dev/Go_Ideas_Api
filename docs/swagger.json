@@ -1,0 +1,360 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "API for managing project ideas",
+        "title": "Ideas API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/v1",
+    "paths": {
+        "/idea": {
+            "get": {
+                "description": "Retrieves all ideas from the system",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ideas"
+                ],
+                "summary": "Get all ideas",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Idea"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {}
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new idea in the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ideas"
+                ],
+                "summary": "Create a new idea",
+                "parameters": [
+                    {
+                        "description": "Idea object",
+                        "name": "idea",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateIdeaPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Result message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - invalid payload",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/idea/{id}": {
+            "get": {
+                "description": "Retrieves a single idea by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ideas"
+                ],
+                "summary": "Get a specific idea by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Idea ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Idea"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID format",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Idea not found",
+                        "schema": {}
+                    }
+                }
+            },
+            "post": {
+                "description": "Updates an idea's information in the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ideas"
+                ],
+                "summary": "Update an existing idea",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Idea ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated idea object",
+                        "name": "idea",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateIdeaPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or ID format",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Idea not found",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {}
+                    }
+                }
+            },
+            "delete": {
+                "description": "Removes an idea from the system",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ideas"
+                ],
+                "summary": "Delete an idea",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Idea ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID format",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Idea not found",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {}
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.CreateIdeaPayload": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/model.RequestStatus"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "techStack": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.TechStack"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Idea": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "description": "Votes       int           `json:\"votes\"`       // Number of user votes/interest\nRequestedBy     string        `json:\"requestedBy\"`     // Username or email of requester",
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/model.RequestStatus"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "techStack": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.TechStack"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.RequestStatus": {
+            "description": "Status of the idea request",
+            "type": "string",
+            "enum": [
+                "requested",
+                "reviewing",
+                "planned",
+                "in-progress",
+                "published",
+                "rejected"
+            ],
+            "x-enum-varnames": [
+                "Requested",
+                "Reviewing",
+                "Planned",
+                "InProgress",
+                "Published",
+                "Rejected"
+            ]
+        },
+        "model.TechStack": {
+            "description": "Technology stack for the idea",
+            "type": "string",
+            "enum": [
+                "Rust",
+                "Go",
+                "Next",
+                "React",
+                "Axum",
+                "Postgres",
+                "MySQL",
+                "Docker",
+                "ActixWeb",
+                "ChiRouter",
+                "Node"
+            ],
+            "x-enum-varnames": [
+                "Rust",
+                "Go",
+                "Next",
+                "React",
+                "Axum",
+                "Postgres",
+                "MySQL",
+                "Docker",
+                "ActixWeb",
+                "ChiRouter",
+                "Node"
+            ]
+        },
+        "model.UpdateIdeaPayload": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/model.RequestStatus"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "techStack": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.TechStack"
+                    }
+                },
+                "title": {
+                    "description": "Pointer so we can check for null values",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
