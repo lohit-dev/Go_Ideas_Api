@@ -18,11 +18,11 @@ func NewIdeaService(store storage.IdeaStorage) *IdeaService {
 }
 
 func (s *IdeaService) CreateIdea(idea model.Idea) utils.Result[string] {
-	for _, stack := range idea.TechStack {
-		if !utils.IsValidTechStack(stack) {
-			return utils.Result[string]{Err: fmt.Errorf("invalid tech stack: %v", stack)}
-		}
-	}
+	// for _, stack := range idea.TechStack {
+	// 	if !utils.IsValidTechStack(stack) {
+	// 		return utils.Result[string]{Err: fmt.Errorf("invalid tech stack: %v", stack)}
+	// 	}
+	// }
 
 	return s.store.CreateIdea(idea)
 }
@@ -40,11 +40,11 @@ func (s *IdeaService) UpdateIdea(id uuid.UUID, idea model.Idea) utils.Result[str
 		return utils.Result[string]{Err: fmt.Errorf("invalid request status: %v", idea.Status)}
 	}
 
-	for _, stack := range idea.TechStack {
-		if !utils.IsValidTechStack(stack) {
-			return utils.Result[string]{Err: fmt.Errorf("invalid tech stack: %v", stack)}
-		}
-	}
+	// for _, stack := range idea.TechStack {
+	// 	if !utils.IsValidTechStack(stack) {
+	// 		return utils.Result[string]{Err: fmt.Errorf("invalid tech stack: %v", stack)}
+	// 	}
+	// }
 
 	return s.store.UpdateIdea(id, idea)
 }

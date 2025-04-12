@@ -175,6 +175,12 @@ func (h *IdeaHandler) UpdateIdea(w http.ResponseWriter, r *http.Request) {
 		updatedIdea.TechStack = *updatePayload.TechStack
 	}
 	if updatePayload.Tags != nil {
+		// tagsJSON, err := json.Marshal(updatePayload.Tags)
+		// if err != nil {
+		// 	http.Error(w, fmt.Sprintf("failed to marshal tags: %v", err), http.StatusBadRequest)
+		// 	return
+		// }
+		// updatedIdea.Tags = tagsJSON
 		updatedIdea.Tags = *updatePayload.Tags
 	}
 	if updatePayload.Status != nil {
