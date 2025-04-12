@@ -11,6 +11,7 @@ import (
 	"test_project/test/internal/service"
 	"test_project/test/internal/storage"
 
+	"github.com/joho/godotenv"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
@@ -24,6 +25,7 @@ import (
 // @schemes https
 func main() {
 	// store := storage.NewJsonStore("data/ideas.json")
+	_ = godotenv.Load(".env")
 	dbconfig := config.NewDBConfig()
 
 	pg, err := storage.NewPostgresStore(dbconfig.GetDSNPG())
