@@ -6,6 +6,7 @@ import (
 	_ "test_project/test/docs"
 	"test_project/test/internal/config"
 	"test_project/test/internal/handler"
+	"test_project/test/internal/middleware"
 	rt "test_project/test/internal/router"
 	"test_project/test/internal/service"
 	"test_project/test/internal/storage"
@@ -36,7 +37,7 @@ func main() {
 	router := http.NewServeMux()
 	v1Routes := rt.SetupRoutes(h)
 
-	router.Handle("/v1/", http.StripPrefix("/v1", v1Routes))
+	router.Handle("/v1/", http.StripPrefix("/v1", middleware.CORS(middleware.Logging(v1Routes))))
 	router.Handle("/", httpSwagger.Handler(
 		httpSwagger.URL("/swagger/doc.json"),
 		httpSwagger.DeepLinking(true),
