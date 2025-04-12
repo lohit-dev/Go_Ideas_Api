@@ -22,16 +22,15 @@ func NewIdeaHandler(service *service.IdeaService) *IdeaHandler {
 
 // CreateIdea godoc
 // @Summary Create a new idea
-// @Description Creates a new idea in the system
+// @Description Creates a new idea in the system with the provided details
 // @Tags Ideas
 // @Accept json
 // @Produce json
-// @Param idea body model.CreateIdeaPayload true "Idea object"
-// @Success 201 {object} map[string]string "Result message"
-// @Failure 400 {object} error "Bad request - invalid payload"
-// @Failure 500 {object} error "Server error"
+// @Param idea body model.CreateIdeaPayload true "Idea object with title, description, tech stack, and tags"
+// @Success 201 {object} map[string]string "Returns a success message with the created idea ID"
+// @Failure 400 {object} map[string]string "Bad request - invalid payload format or missing required fields"
+// @Failure 500 {object} map[string]string "Server error - database or internal processing error"
 // @Router /idea [post]
-
 func (h *IdeaHandler) CreateIdea(w http.ResponseWriter, r *http.Request) {
 	var createPayload model.CreateIdeaPayload
 
@@ -40,7 +39,6 @@ func (h *IdeaHandler) CreateIdea(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create new Idea model
 	idea := model.Idea{
 		ID:          uuid.MustParse(utils.GenId()),
 		Title:       createPayload.Title,
@@ -54,19 +52,16 @@ func (h *IdeaHandler) CreateIdea(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:   time.Now(),
 	}
 
-	// Default status if not provided
 	if idea.Status == "" {
 		idea.Status = model.Requested
 	}
 
-	// Call service to persist the idea
 	result := h.service.CreateIdea(idea)
 	if result.Err != nil {
 		http.Error(w, fmt.Sprintf("failed to create idea: %v", result.Err), http.StatusInternalServerError)
 		return
 	}
 
-	// Respond with success
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(map[string]string{"result": result.Data}); err != nil {
 		http.Error(w, "failed to encode response", http.StatusInternalServerError)
