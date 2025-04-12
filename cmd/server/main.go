@@ -18,10 +18,8 @@ import (
 // @title Ideas API
 // @version 1.1
 // @description API for managing project ideas
-// @host localhost:8080
-// @host https://go-ideas-api.onrender.com
+// @host go-ideas-api.onrender.com
 // @BasePath /v1
-// @schemes http
 // @schemes https
 func main() {
 	// store := storage.NewJsonStore("data/ideas.json")

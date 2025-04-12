@@ -5,14 +5,14 @@ definitions:
       description:
         type: string
       status:
-        $ref: '#/definitions/model.RequestStatus'
+        $ref: "#/definitions/model.RequestStatus"
       tags:
         items:
           type: string
         type: array
       techStack:
         items:
-          $ref: '#/definitions/model.TechStack'
+          $ref: "#/definitions/model.TechStack"
         type: array
       title:
         type: string
@@ -29,14 +29,14 @@ definitions:
       id:
         type: string
       status:
-        $ref: '#/definitions/model.RequestStatus'
+        $ref: "#/definitions/model.RequestStatus"
       tags:
         items:
           type: string
         type: array
       techStack:
         items:
-          $ref: '#/definitions/model.TechStack'
+          $ref: "#/definitions/model.TechStack"
         type: array
       title:
         type: string
@@ -46,60 +46,60 @@ definitions:
   model.RequestStatus:
     description: Status of the idea request
     enum:
-    - requested
-    - reviewing
-    - planned
-    - in-progress
-    - published
-    - rejected
+      - requested
+      - reviewing
+      - planned
+      - in-progress
+      - published
+      - rejected
     type: string
     x-enum-varnames:
-    - Requested
-    - Reviewing
-    - Planned
-    - InProgress
-    - Published
-    - Rejected
+      - Requested
+      - Reviewing
+      - Planned
+      - InProgress
+      - Published
+      - Rejected
   model.TechStack:
     description: Technology stack for the idea
     enum:
-    - Rust
-    - Go
-    - Next
-    - React
-    - Axum
-    - Postgres
-    - MySQL
-    - Docker
-    - ActixWeb
-    - ChiRouter
-    - Node
+      - Rust
+      - Go
+      - Next
+      - React
+      - Axum
+      - Postgres
+      - MySQL
+      - Docker
+      - ActixWeb
+      - ChiRouter
+      - Node
     type: string
     x-enum-varnames:
-    - Rust
-    - Go
-    - Next
-    - React
-    - Axum
-    - Postgres
-    - MySQL
-    - Docker
-    - ActixWeb
-    - ChiRouter
-    - Node
+      - Rust
+      - Go
+      - Next
+      - React
+      - Axum
+      - Postgres
+      - MySQL
+      - Docker
+      - ActixWeb
+      - ChiRouter
+      - Node
   model.UpdateIdeaPayload:
     properties:
       description:
         type: string
       status:
-        $ref: '#/definitions/model.RequestStatus'
+        $ref: "#/definitions/model.RequestStatus"
       tags:
         items:
           type: string
         type: array
       techStack:
         items:
-          $ref: '#/definitions/model.TechStack'
+          $ref: "#/definitions/model.TechStack"
         type: array
       title:
         description: Pointer so we can check for null values
@@ -116,33 +116,33 @@ paths:
     get:
       description: Retrieves all ideas from the system
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Idea'
+              $ref: "#/definitions/model.Idea"
             type: array
         "500":
           description: Server error
           schema: {}
       summary: Get all ideas
       tags:
-      - Ideas
+        - Ideas
     post:
       consumes:
-      - application/json
+        - application/json
       description: Creates a new idea in the system
       parameters:
-      - description: Idea object
-        in: body
-        name: idea
-        required: true
-        schema:
-          $ref: '#/definitions/model.CreateIdeaPayload'
+        - description: Idea object
+          in: body
+          name: idea
+          required: true
+          schema:
+            $ref: "#/definitions/model.CreateIdeaPayload"
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Result message
@@ -158,18 +158,18 @@ paths:
           schema: {}
       summary: Create a new idea
       tags:
-      - Ideas
+        - Ideas
   /idea/{id}:
     delete:
       description: Removes an idea from the system
       parameters:
-      - description: Idea ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Idea ID
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Success message
@@ -188,22 +188,22 @@ paths:
           schema: {}
       summary: Delete an idea
       tags:
-      - Ideas
+        - Ideas
     get:
       description: Retrieves a single idea by its ID
       parameters:
-      - description: Idea ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Idea ID
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Idea'
+            $ref: "#/definitions/model.Idea"
         "400":
           description: Invalid ID format
           schema: {}
@@ -212,25 +212,25 @@ paths:
           schema: {}
       summary: Get a specific idea by ID
       tags:
-      - Ideas
+        - Ideas
     post:
       consumes:
-      - application/json
+        - application/json
       description: Updates an idea's information in the system
       parameters:
-      - description: Idea ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Updated idea object
-        in: body
-        name: idea
-        required: true
-        schema:
-          $ref: '#/definitions/model.UpdateIdeaPayload'
+        - description: Idea ID
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: Updated idea object
+          in: body
+          name: idea
+          required: true
+          schema:
+            $ref: "#/definitions/model.UpdateIdeaPayload"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Success message
@@ -249,7 +249,7 @@ paths:
           schema: {}
       summary: Update an existing idea
       tags:
-      - Ideas
+        - Ideas
 schemes:
-- https
+  - https
 swagger: "2.0"
