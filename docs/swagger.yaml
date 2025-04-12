@@ -105,7 +105,7 @@ definitions:
         description: Pointer so we can check for null values
         type: string
     type: object
-host: https://go-ideas-api.onrender.com
+host: go-ideas-api.onrender.com
 info:
   contact: {}
   description: API for managing project ideas
