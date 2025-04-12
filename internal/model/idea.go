@@ -38,16 +38,16 @@ const (
 )
 
 type Idea struct {
-	ID          uuid.UUID     `json:"id"`
-	Title       string        `json:"title"`
-	Description string        `json:"description"`
-	TechStack   []TechStack   `json:"techStack"`
-	Tags        []string      `json:"tags"`
-	Status      RequestStatus `json:"status"`
-	// Votes       int           `json:"votes"`       // Number of user votes/interest
-	// RequestedBy     string        `json:"requestedBy"`     // Username or email of requester
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID          uuid.UUID     `json:"id" gorm:"type:uuid;primaryKey"`
+	Title       string        `json:"title" gorm:"not null"`
+	Description string        `json:"description" gorm:"type:text"`
+	TechStack   []TechStack   `json:"techStack" gorm:"type:jsonb"`
+	Tags        []string      `json:"tags" gorm:"type:jsonb"`
+	Status      RequestStatus `json:"status" gorm:"type:varchar(20);default:'requested'"`
+	Votes       int           `json:"votes" gorm:"default:0"`
+	RequestedBy string        `json:"requestedBy" gorm:"type:varchar(100)"`
+	CreatedAt   time.Time     `json:"createdAt" gorm:"autoCreateTime"`
+	UpdatedAt   time.Time     `json:"updatedAt" gorm:"autoUpdateTime"`
 }
 
 type CreateIdeaPayload struct {
@@ -55,13 +55,16 @@ type CreateIdeaPayload struct {
 	Description string        `json:"description"`
 	TechStack   []TechStack   `json:"techStack"`
 	Tags        []string      `json:"tags"`
-	Status      RequestStatus `json:"status"`
+	Status      RequestStatus `json:"status,omitempty"`
+	RequestedBy string        `json:"requestedBy,omitempty"`
 }
 
 type UpdateIdeaPayload struct {
-	Title       *string        `json:"title,omitempty"` // Pointer so we can check for null values
+	Title       *string        `json:"title,omitempty"`
 	Description *string        `json:"description,omitempty"`
 	TechStack   *[]TechStack   `json:"techStack,omitempty"`
 	Tags        *[]string      `json:"tags,omitempty"`
 	Status      *RequestStatus `json:"status,omitempty"`
+	Votes       *int           `json:"votes,omitempty"`
+	RequestedBy *string        `json:"requestedBy,omitempty"`
 }

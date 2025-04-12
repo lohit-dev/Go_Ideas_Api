@@ -17,7 +17,7 @@ type IdeaStorage interface {
 	DeleteIdea(id uuid.UUID) utils.Result[string]
 }
 
-// Implementation
+// Implementation for json store
 func (js *JsonStore) GetAllIdeas() utils.Result[[]model.Idea] {
 	return js.ReadFile()
 }

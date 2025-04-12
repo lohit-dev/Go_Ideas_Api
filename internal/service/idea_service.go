@@ -34,8 +34,8 @@ func (s *IdeaService) GetAllIdeas() utils.Result[[]model.Idea] {
 func (s *IdeaService) GetIdea(id uuid.UUID) utils.Result[model.Idea] {
 	return s.store.GetIdea(id)
 }
-func (s *IdeaService) UpdateIdea(id uuid.UUID, idea model.Idea) utils.Result[string] {
 
+func (s *IdeaService) UpdateIdea(id uuid.UUID, idea model.Idea) utils.Result[string] {
 	if !utils.IsValidRequestStatus(idea.Status) {
 		return utils.Result[string]{Err: fmt.Errorf("invalid request status: %v", idea.Status)}
 	}

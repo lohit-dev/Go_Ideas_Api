@@ -31,13 +31,16 @@ func NewIdeaHandler(service *service.IdeaService) *IdeaHandler {
 // @Failure 400 {object} error "Bad request - invalid payload"
 // @Failure 500 {object} error "Server error"
 // @Router /idea [post]
+
 func (h *IdeaHandler) CreateIdea(w http.ResponseWriter, r *http.Request) {
 	var createPayload model.CreateIdeaPayload
+
 	if err := json.NewDecoder(r.Body).Decode(&createPayload); err != nil {
 		http.Error(w, fmt.Sprintf("failed to decode idea: %v", err), http.StatusBadRequest)
 		return
 	}
 
+	// Create new Idea model
 	idea := model.Idea{
 		ID:          uuid.MustParse(utils.GenId()),
 		Title:       createPayload.Title,
@@ -45,22 +48,29 @@ func (h *IdeaHandler) CreateIdea(w http.ResponseWriter, r *http.Request) {
 		TechStack:   createPayload.TechStack,
 		Tags:        createPayload.Tags,
 		Status:      createPayload.Status,
+		Votes:       0,
+		RequestedBy: "anonymous",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
 
+	// Default status if not provided
 	if idea.Status == "" {
 		idea.Status = model.Requested
 	}
 
+	// Call service to persist the idea
 	result := h.service.CreateIdea(idea)
 	if result.Err != nil {
-		http.Error(w, result.Err.Error(), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("failed to create idea: %v", result.Err), http.StatusInternalServerError)
 		return
 	}
 
+	// Respond with success
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"result": result.Data})
+	if err := json.NewEncoder(w).Encode(map[string]string{"result": result.Data}); err != nil {
+		http.Error(w, "failed to encode response", http.StatusInternalServerError)
+	}
 }
 
 // GetAllIdeas godoc
@@ -169,6 +179,12 @@ func (h *IdeaHandler) UpdateIdea(w http.ResponseWriter, r *http.Request) {
 	}
 	if updatePayload.Status != nil {
 		updatedIdea.Status = *updatePayload.Status
+	}
+	if updatePayload.Votes != nil {
+		updatedIdea.Votes = *updatePayload.Votes
+	}
+	if updatePayload.RequestedBy != nil {
+		updatedIdea.RequestedBy = *updatePayload.RequestedBy
 	}
 
 	updatedIdea.UpdatedAt = time.Now()
