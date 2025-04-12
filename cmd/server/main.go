@@ -38,12 +38,12 @@ func main() {
 	v1Routes := rt.SetupRoutes(h)
 
 	router.Handle("/v1/", http.StripPrefix("/v1", middleware.CORS(middleware.Logging(v1Routes))))
-	router.Handle("/", httpSwagger.Handler(
+	router.Handle("/", middleware.CORS(httpSwagger.Handler(
 		httpSwagger.URL("/swagger/doc.json"),
 		httpSwagger.DeepLinking(true),
 		httpSwagger.DocExpansion("none"),
 		httpSwagger.DomID("swagger-ui"),
-	))
+	)))
 
 	server := http.Server{
 		Addr:    ":8080",
