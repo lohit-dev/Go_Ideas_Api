@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"strconv"
+	utils "test_project/test/pkg"
 )
 
 type DBConfig struct {
@@ -16,29 +16,21 @@ type DBConfig struct {
 }
 
 func NewDBConfig() DBConfig {
-	port, err := strconv.Atoi(getEnvOrDefault("DB_PORT", "5433"))
+	port, err := strconv.Atoi(utils.GetEnvOrDefault("DB_PORT", "5433"))
 	if err != nil {
 		port = 5433
 	}
 
 	return DBConfig{
-		Host:     getEnvOrDefault("DB_HOST", "localhost"),
+		Host:     utils.GetEnvOrDefault("DB_HOST", "localhost"),
 		Port:     port,
-		User:     getEnvOrDefault("DB_USER", "postgres"),
-		Password: getEnvOrDefault("DB_PASSWORD", "postgres"),
-		DBName:   getEnvOrDefault("DB_NAME", "ideadb"),
-		SSLMode:  getEnvOrDefault("DB_SSLMODE", "disable"),
+		User:     utils.GetEnvOrDefault("DB_USER", "postgres"),
+		Password: utils.GetEnvOrDefault("DB_PASSWORD", "postgres"),
+		DBName:   utils.GetEnvOrDefault("DB_NAME", "ideadb"),
+		SSLMode:  utils.GetEnvOrDefault("DB_SSLMODE", "disable"),
 	}
 }
 
 func (c DBConfig) GetDSNPG() string {
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s", c.Host, c.User, c.Password, c.DBName, c.Port, c.SSLMode)
-}
-
-func getEnvOrDefault(key, defaultValue string) string {
-	value := os.Getenv(key)
-	if value == "" {
-		return defaultValue
-	}
-	return value
 }

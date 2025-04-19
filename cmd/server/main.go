@@ -31,11 +31,15 @@ func main() {
 		log.Fatalf("Failed to initialize postgres db: %v", err)
 	}
 	store := pg
-	service := service.NewIdeaService(store)
-	h := handler.NewIdeaHandler(service)
+
+	s := service.NewIdeaService(store)
+	authService := service.NewUserService(store)
+
+	h := handler.NewIdeaHandler(s)
+	authHandler := handler.NewAuthHandler(authService)
 
 	router := http.NewServeMux()
-	v1Routes := rt.SetupRoutes(h)
+	v1Routes := rt.SetupRoutes(h, authHandler)
 
 	router.Handle("/v1/", http.StripPrefix("/v1", middleware.CORS(middleware.Logging(v1Routes))))
 	router.Handle("/", middleware.CORS(httpSwagger.Handler(

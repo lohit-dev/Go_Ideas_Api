@@ -3,6 +3,7 @@ package storage
 import (
 	"errors"
 	"fmt"
+	"test_project/test/internal"
 	"test_project/test/internal/model"
 	utils "test_project/test/pkg"
 	"time"
@@ -22,7 +23,8 @@ func NewPostgresStore(dbstring string) (*PostgresStore, error) {
 		return nil, fmt.Errorf("failed to connect to the db: %v", err)
 	}
 
-	if err := db.AutoMigrate(&model.Idea{}); err != nil {
+	// We must add the models here for creation of the tables
+	if err := db.AutoMigrate(&model.Idea{}, &internal.User{}); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %v", err)
 	}
 
