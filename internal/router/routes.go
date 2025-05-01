@@ -16,7 +16,7 @@ func SetupRoutes(ideaHandler *handler.IdeaHandler, authHandler *handler.AuthHand
 	// Idea
 	mux.Handle("POST /idea", middleware.Auth(http.HandlerFunc(ideaHandler.CreateIdea)))
 	mux.Handle("GET /idea/{id}", middleware.Auth(http.HandlerFunc(ideaHandler.GetIdea)))
-	mux.Handle("GET /idea", middleware.Auth(http.HandlerFunc(ideaHandler.GetAllIdeas)))
+	mux.Handle("GET /ideas", http.HandlerFunc(ideaHandler.GetAllIdeas))
 	mux.Handle("POST /idea/{id}", middleware.Auth(http.HandlerFunc(ideaHandler.UpdateIdea)))
 	mux.Handle("DELETE /idea/{id}", middleware.Auth(http.HandlerFunc(ideaHandler.DeleteIdea)))
 
