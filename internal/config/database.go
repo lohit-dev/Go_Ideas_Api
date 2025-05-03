@@ -16,7 +16,7 @@ type DBConfig struct {
 }
 
 func NewDBConfig() DBConfig {
-	port, err := strconv.Atoi(utils.GetEnvOrDefault("DB_PORT", "5433"))
+	port, err := strconv.Atoi(utils.GetEnvOrDefault("DB_PORT", "5432"))
 	if err != nil {
 		port = 5433
 	}
