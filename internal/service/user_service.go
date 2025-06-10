@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"test_project/test/internal"
+	"test_project/test/internal/model"
 	"test_project/test/internal/storage"
 
 	"golang.org/x/crypto/bcrypt"
@@ -16,13 +16,13 @@ func NewUserService(store storage.UserStorage) *UserService {
 	return &UserService{store}
 }
 
-func (s *UserService) CreateUser(req internal.RegisterRequest) error {
+func (s *UserService) CreateUser(req model.RegisterRequest) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
-	user := internal.User{
+	user := model.User{
 		Username: req.Username,
 		Password: string(hashedPassword),
 		Email:    req.Email,

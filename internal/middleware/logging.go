@@ -15,7 +15,6 @@ type responseWriter struct {
 func (rw *responseWriter) WriteHeader(code int) {
 	rw.statusCode = code
 	rw.ResponseWriter.WriteHeader(code)
-
 }
 
 func Logging(next http.Handler) http.Handler {

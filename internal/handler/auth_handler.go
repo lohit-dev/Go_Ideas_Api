@@ -3,7 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"test_project/test/internal"
+	"test_project/test/internal/model"
 	"test_project/test/internal/service"
 	utils "test_project/test/pkg"
 	"time"
@@ -25,7 +25,7 @@ func NewAuthHandler(userService *service.UserService) *AuthHandler {
 }
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var req internal.RegisterRequest
+	var req model.RegisterRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -49,7 +49,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var req internal.LoginRequest
+	var req model.LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.sendError(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -79,7 +79,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(internal.LoginResponse{Token: tokenString})
+	json.NewEncoder(w).Encode(model.LoginResponse{Token: tokenString})
 }
 
 func (h *AuthHandler) sendError(w http.ResponseWriter, message string, status int) {

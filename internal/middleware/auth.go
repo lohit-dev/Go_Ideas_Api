@@ -24,7 +24,7 @@ func Auth(next http.Handler) http.Handler {
 
 		tokenString := bearerToken[1]
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 			return []byte(utils.GetEnvOrDefault("JWT_SECRET", "default")), nil
 		})
 

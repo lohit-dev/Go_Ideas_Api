@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"test_project/test/internal"
 	"test_project/test/internal/model"
 	utils "test_project/test/pkg"
 
@@ -17,6 +16,6 @@ type IdeaStorage interface {
 }
 
 type UserStorage interface {
-	CreateUser(user internal.User) error
-	GetUserByUsername(username string) (internal.User, error)
+	CreateUser(user model.User) error
+	GetUserByUsername(username string) (model.User, error)
 }
