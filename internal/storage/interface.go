@@ -19,3 +19,10 @@ type UserStorage interface {
 	CreateUser(user model.User) error
 	GetUserByUsername(username string) (model.User, error)
 }
+
+type VoteStorage interface {
+	AddVote(userID uuid.UUID, ideaID uuid.UUID) utils.Result[string]
+	RemoveVote(userID uuid.UUID, ideaID uuid.UUID) utils.Result[string]
+	HasUserVoted(userID uuid.UUID, ideaID uuid.UUID) utils.Result[bool]
+	GetVoteCount(ideaID uuid.UUID) utils.Result[int]
+}

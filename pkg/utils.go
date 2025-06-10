@@ -59,3 +59,7 @@ type Result[T any] struct {
 func (r *Result[T]) New(data T, err error) Result[T] {
 	return Result[T]{Data: data, Err: err}
 }
+
+func NewResult[T any](data T, err error) Result[T] {
+	return Result[T]{Data: data, Err: err}
+}

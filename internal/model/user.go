@@ -11,6 +11,7 @@ type User struct {
 	Username  string    `json:"username" gorm:"unique;not null"`
 	Password  string    `json:"-" gorm:"not null"`
 	Email     string    `json:"email" gorm:"unique;not null"`
+	IsAdmin   bool      `json:"isAdmin" gorm:"not null;default:false"`
 	CreatedAt time.Time `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt time.Time `json:"updatedAt" gorm:"autoUpdateTime"`
 }

@@ -21,27 +21,83 @@ import (
 // @host go-ideas-api.onrender.com
 // @BasePath /v1
 // @schemes https
-func main() {
-	// store := storage.NewJsonStore("data/ideas.json")
-	_ = godotenv.Load(".env")
-	dbconfig := config.NewDBConfig()
 
+type App struct {
+	server *http.Server
+}
+
+func NewApp() (*App, error) {
+	// Load environment variables
+	_ = godotenv.Load(".env")
+
+	// Initialize storage
+	store, err := initStorage()
+	if err != nil {
+		return nil, err
+	}
+
+	// Initialize
+	services := initServices(store)
+	handlers := initHandlers(services)
+	router := setupRouter(handlers)
+
+	return &App{
+		server: &http.Server{
+			Addr:    ":8080",
+			Handler: router,
+		},
+	}, nil
+}
+
+func (a *App) Start() error {
+	return a.server.ListenAndServe()
+}
+
+func initStorage() (*storage.PostgresStore, error) {
+	dbconfig := config.NewDBConfig()
 	pg, err := storage.NewPostgresStore(dbconfig.GetDSNPG())
 	if err != nil {
-		log.Fatalf("Failed to initialize postgres db: %v", err)
+		return nil, err
 	}
-	store := pg
+	return pg, nil
+}
 
-	s := service.NewIdeaService(store)
-	authService := service.NewUserService(store)
+type Services struct {
+	IdeaService *service.IdeaService
+	UserService *service.UserService
+	VoteService *service.VoteService
+}
 
-	h := handler.NewIdeaHandler(s)
-	authHandler := handler.NewAuthHandler(authService)
+func initServices(store *storage.PostgresStore) *Services {
+	return &Services{
+		IdeaService: service.NewIdeaService(store),
+		UserService: service.NewUserService(store),
+		VoteService: service.NewVoteService(store),
+	}
+}
 
+type Handlers struct {
+	IdeaHandler *handler.IdeaHandler
+	AuthHandler *handler.AuthHandler
+	VoteHandler *handler.VoteHandler
+}
+
+func initHandlers(services *Services) *Handlers {
+	return &Handlers{
+		IdeaHandler: handler.NewIdeaHandler(services.IdeaService),
+		AuthHandler: handler.NewAuthHandler(services.UserService),
+		VoteHandler: handler.NewVoteHandler(services.VoteService),
+	}
+}
+
+func setupRouter(handlers *Handlers) *http.ServeMux {
 	router := http.NewServeMux()
-	v1Routes := rt.SetupRoutes(h, authHandler)
 
+	// API routes
+	v1Routes := rt.SetupRoutes(handlers.IdeaHandler, handlers.AuthHandler, handlers.VoteHandler)
 	router.Handle("/v1/", http.StripPrefix("/v1", middleware.CORS(middleware.Logging(v1Routes))))
+
+	// Swagger documentation
 	router.Handle("/", middleware.CORS(httpSwagger.Handler(
 		httpSwagger.URL("/swagger/doc.json"),
 		httpSwagger.DeepLinking(true),
@@ -49,13 +105,17 @@ func main() {
 		httpSwagger.DomID("swagger-ui"),
 	)))
 
-	server := http.Server{
-		Addr:    ":8080",
-		Handler: router,
+	return router
+}
+
+func main() {
+	app, err := NewApp()
+	if err != nil {
+		log.Fatalf("Failed to initialize application: %v", err)
 	}
 
 	log.Println("Server starting at http://localhost:8080")
-	if err := server.ListenAndServe(); err != nil {
+	if err := app.Start(); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }

@@ -45,7 +45,7 @@ type Idea struct {
 	TechStack   json.RawMessage `json:"techStack" gorm:"type:jsonb"`
 	Tags        json.RawMessage `json:"tags" gorm:"type:jsonb"`
 	Status      RequestStatus   `json:"status" gorm:"type:varchar(20);default:'requested'"`
-	Votes       int             `json:"votes" gorm:"default:0"`
+	Votes       []Vote          `gorm:"foreignKey:IdeaID;default:0"`
 	RequestedBy string          `json:"requestedBy" gorm:"type:varchar(100)"`
 	CreatedAt   time.Time       `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt   time.Time       `json:"updatedAt" gorm:"autoUpdateTime"`
@@ -66,6 +66,17 @@ type UpdateIdeaPayload struct {
 	TechStack   *json.RawMessage `json:"techStack,omitempty"`
 	Tags        *json.RawMessage `json:"tags,omitempty"`
 	Status      *RequestStatus   `json:"status,omitempty"`
-	Votes       *int             `json:"votes,omitempty"`
 	RequestedBy *string          `json:"requestedBy,omitempty"`
+}
+
+// *********************
+//    voting related
+// *********************
+
+type Vote struct {
+	ID        string    `json:"id"`
+	IdeaID    uuid.UUID `json:"idea_id"`
+	UserID    uuid.UUID `json:"user_id"`
+	User      User      `gorm:"foreignKey:UserID"`
+	CreatedAt time.Time `json:"created_at"`
 }

@@ -46,7 +46,7 @@ func (h *IdeaHandler) CreateIdea(w http.ResponseWriter, r *http.Request) {
 		TechStack:   createPayload.TechStack,
 		Tags:        createPayload.Tags,
 		Status:      createPayload.Status,
-		Votes:       0,
+		Votes:       []model.Vote{},
 		RequestedBy: "anonymous",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
@@ -178,12 +178,11 @@ func (h *IdeaHandler) UpdateIdea(w http.ResponseWriter, r *http.Request) {
 		// updatedIdea.Tags = tagsJSON
 		updatedIdea.Tags = *updatePayload.Tags
 	}
+
 	if updatePayload.Status != nil {
 		updatedIdea.Status = *updatePayload.Status
 	}
-	if updatePayload.Votes != nil {
-		updatedIdea.Votes = *updatePayload.Votes
-	}
+
 	if updatePayload.RequestedBy != nil {
 		updatedIdea.RequestedBy = *updatePayload.RequestedBy
 	}
