@@ -24,8 +24,8 @@ func SetupRoutes(ideaHandler *handler.IdeaHandler, authHandler *handler.AuthHand
 	mux.Handle("DELETE /idea/{id}", middleware.Auth(http.HandlerFunc(ideaHandler.DeleteIdea)))
 
 	// Voting
-	mux.Handle("POST /idea/{id}/vote", middleware.Auth(http.HandlerFunc(voteHandler.AddVote)))
-	mux.Handle("DELETE /idea/{id}/vote", middleware.Auth(http.HandlerFunc(voteHandler.RemoveVote)))
+	mux.Handle("POST /idea/{id}/vote", (http.HandlerFunc(voteHandler.AddVote)))
+	mux.Handle("DELETE /idea/{id}/vote", (http.HandlerFunc(voteHandler.RemoveVote)))
 	mux.Handle("GET /idea/{id}/vote/status", http.HandlerFunc(voteHandler.HasUserVoted))
 	mux.Handle("GET /idea/{id}/votes", http.HandlerFunc(voteHandler.GetVoteCount))
 
