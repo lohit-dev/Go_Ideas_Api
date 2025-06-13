@@ -2,8 +2,10 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"test_project/test/internal/model"
 	"test_project/test/internal/storage"
+	utils "test_project/test/pkg"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -40,6 +42,37 @@ func (s *UserService) ValidateCredentials(username, password string) (bool, erro
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		return false, errors.New("invalid credentials")
+	}
+
+	return true, nil
+}
+
+func (s *UserService) GetUserByUsername(username string) utils.Result[model.User] {
+	user, err := s.store.GetUserByUsername(username)
+	if err != nil {
+		return utils.Result[model.User]{Data: user}
+	}
+
+	return utils.Result[model.User]{Data: model.User{}, Err: fmt.Errorf("no user exists with that username")}
+}
+
+func (s *UserService) GetAllUsers() utils.Result[[]model.User] {
+	return s.store.GetAllUsers()
+}
+
+func (s *UserService) DeleteUser(username, password string) (bool, error) {
+	user, err := s.store.GetUserByUsername(username)
+	if err != nil {
+		return false, fmt.Errorf("failed to fetch user: %w", err)
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return false, fmt.Errorf("invalid credentials")
+	}
+
+	_, err = s.store.DeleteUser(username)
+	if err != nil {
+		return false, fmt.Errorf("failed to delete user: %w", err)
 	}
 
 	return true, nil

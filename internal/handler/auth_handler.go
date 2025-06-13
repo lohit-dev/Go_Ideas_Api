@@ -86,3 +86,60 @@ func (h *AuthHandler) sendError(w http.ResponseWriter, message string, status in
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(map[string]string{"error": message})
 }
+
+func (h *AuthHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var req model.DeleteRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.sendError(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if err := h.validator.Struct(req); err != nil {
+		h.sendError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	deleted, err := h.userService.DeleteUser(req.Username, req.Password)
+	if err != nil {
+		h.sendError(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	if deleted {
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{"message": "User deleted successfully"})
+		return
+	}
+
+	h.sendError(w, "Failed to delete user", http.StatusInternalServerError)
+}
+
+func (h *AuthHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	result := h.userService.GetAllUsers()
+	if result.Err != nil {
+		http.Error(w, result.Err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(result.Data)
+}
+
+func (h *AuthHandler) GetUserByUsername(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	username := r.PathValue("username")
+	if username == "" {
+		http.Error(w, "missing username query parameter", http.StatusBadRequest)
+		return
+	}
+
+	result := h.userService.GetUserByUsername(username)
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(result.Data)
+}

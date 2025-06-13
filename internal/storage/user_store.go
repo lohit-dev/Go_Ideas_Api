@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"test_project/test/internal/model"
+	utils "test_project/test/pkg"
 	"time"
 
 	"github.com/google/uuid"
@@ -31,7 +32,6 @@ func (ps *PostgresStore) CreateUser(user model.User) error {
 
 	result = ps.db.Where("email = ?", user.Email).First(&existingUser)
 	if result.Error == nil {
-		return errors.New("email already exists")
 	}
 
 	if err := ps.db.Create(&user).Error; err != nil {
@@ -39,6 +39,15 @@ func (ps *PostgresStore) CreateUser(user model.User) error {
 	}
 
 	return nil
+}
+
+func (ps *PostgresStore) GetAllUsers() utils.Result[[]model.User] {
+	var users []model.User
+	if err := ps.db.First(&users).Error; err != nil {
+		return utils.Result[[]model.User]{Err: fmt.Errorf("failed to get all ideas: %v", err)}
+	}
+
+	return utils.Result[[]model.User]{Data: users}
 }
 
 func (ps *PostgresStore) GetUserByUsername(username string) (model.User, error) {
@@ -51,5 +60,24 @@ func (ps *PostgresStore) GetUserByUsername(username string) (model.User, error) 
 
 		return model.User{}, fmt.Errorf("failed to get user: %v", err)
 	}
+	return user, nil
+}
+
+func (ps *PostgresStore) DeleteUser(username string) (model.User, error) {
+	var user model.User
+
+	// Check if user exists
+	result := ps.db.Where("username = ?", username).First(&user)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return model.User{}, fmt.Errorf("user not found")
+		}
+		return model.User{}, result.Error
+	}
+
+	if err := ps.db.Delete(&user).Error; err != nil {
+		return model.User{}, fmt.Errorf("failed to delete user: %v", err)
+	}
+
 	return user, nil
 }

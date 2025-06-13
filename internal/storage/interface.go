@@ -18,6 +18,8 @@ type IdeaStorage interface {
 type UserStorage interface {
 	CreateUser(user model.User) error
 	GetUserByUsername(username string) (model.User, error)
+	GetAllUsers() utils.Result[[]model.User]
+	DeleteUser(username string) (model.User, error)
 }
 
 type VoteStorage interface {

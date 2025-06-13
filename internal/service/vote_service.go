@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"test_project/test/internal/storage"
 	utils "test_project/test/pkg"
@@ -21,13 +22,13 @@ func (s *VoteService) AddVote(userId uuid.UUID, ideaId uuid.UUID) utils.Result[s
 	hasVoted := s.store.HasUserVoted(userId, ideaId)
 	if hasVoted.Err != nil {
 		return utils.Result[string]{
-			Err: fmt.Errorf(hasVoted.Err.Error()),
+			Err: errors.New(hasVoted.Err.Error()),
 		}
 	}
 
 	if hasVoted.Data {
 		return utils.Result[string]{
-			Err: fmt.Errorf("User has already voted"),
+			Err: fmt.Errorf("user has already voted"),
 		}
 	}
 
@@ -38,12 +39,12 @@ func (s *VoteService) RemoveVote(userId uuid.UUID, ideaId uuid.UUID) utils.Resul
 	hasVoted := s.store.HasUserVoted(userId, ideaId)
 	if hasVoted.Err != nil {
 		return utils.Result[string]{
-			Err: fmt.Errorf(hasVoted.Err.Error()),
+			Err: errors.New(hasVoted.Err.Error()),
 		}
 	}
 	if !hasVoted.Data {
 		return utils.Result[string]{
-			Err: fmt.Errorf("User has not voted for this idea"),
+			Err: fmt.Errorf("user has not voted for this idea"),
 		}
 	}
 
