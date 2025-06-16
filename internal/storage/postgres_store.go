@@ -23,7 +23,7 @@ func NewPostgresStore(dbstring string) (*PostgresStore, error) {
 	}
 
 	// We must add the models here for creation of the tables
-	if err := db.AutoMigrate(&model.Idea{}, &model.User{}); err != nil {
+	if err := db.AutoMigrate(&model.Idea{}, &model.User{}, &model.Vote{}); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %v", err)
 	}
 

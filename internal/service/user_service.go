@@ -50,10 +50,10 @@ func (s *UserService) ValidateCredentials(username, password string) (bool, erro
 func (s *UserService) GetUserByUsername(username string) utils.Result[model.User] {
 	user, err := s.store.GetUserByUsername(username)
 	if err != nil {
-		return utils.Result[model.User]{Data: user}
+		return utils.Result[model.User]{Err: err}
 	}
 
-	return utils.Result[model.User]{Data: model.User{}, Err: fmt.Errorf("no user exists with that username")}
+	return utils.Result[model.User]{Data: user}
 }
 
 func (s *UserService) GetAllUsers() utils.Result[[]model.User] {

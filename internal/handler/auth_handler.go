@@ -65,8 +65,17 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		h.sendError(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
+
+	// Get user to get their ID
+	result := h.userService.GetUserByUsername(req.Username)
+	if result.Err != nil {
+		h.sendError(w, "Error retrieving user", http.StatusInternalServerError)
+		return
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": req.Username,
+		"user_id":  result.Data.ID.String(),
 		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	})
 

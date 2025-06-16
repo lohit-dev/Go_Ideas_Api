@@ -37,5 +37,10 @@ func ExtractUserIDFromToken(r *http.Request) (uuid.UUID, error) {
 		return uuid.Nil, errors.New("user_id not found in token")
 	}
 
-	return uuid.Parse(userIDStr)
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		return uuid.Nil, errors.New("invalid user_id format in token")
+	}
+
+	return userID, nil
 }
