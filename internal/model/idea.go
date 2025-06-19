@@ -45,7 +45,8 @@ type Idea struct {
 	TechStack   json.RawMessage `json:"techStack" gorm:"type:jsonb"`
 	Tags        json.RawMessage `json:"tags" gorm:"type:jsonb"`
 	Status      RequestStatus   `json:"status" gorm:"type:varchar(20);default:'requested'"`
-	Votes       []Vote          `gorm:"foreignKey:IdeaID;default:0"`
+	Votes       []Vote          `json:"votes" gorm:"not null;foreignKey:IdeaID;default:0"`
+	Count       int             `json:"count" gorm:"-"`
 	RequestedBy string          `json:"requestedBy" gorm:"type:varchar(100)"`
 	CreatedAt   time.Time       `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt   time.Time       `json:"updatedAt" gorm:"autoUpdateTime"`
@@ -78,5 +79,6 @@ type Vote struct {
 	IdeaID    uuid.UUID `json:"idea_id"`
 	UserID    uuid.UUID `json:"user_id"`
 	User      User      `gorm:"foreignKey:UserID"`
+	Count     int       `json:"count" gorm:"not null;default:0"`
 	CreatedAt time.Time `json:"created_at"`
 }

@@ -31,12 +31,16 @@ func NewPostgresStore(dbstring string) (*PostgresStore, error) {
 }
 
 func (ps *PostgresStore) GetAllIdeas() utils.Result[[]model.Idea] {
-	var idea []model.Idea
-	if err := ps.db.Find(&idea).Error; err != nil {
+	var ideas []model.Idea
+	// Preload Votes so the slice is filled
+	if err := ps.db.Preload("Votes").Find(&ideas).Error; err != nil {
 		return utils.Result[[]model.Idea]{Err: fmt.Errorf("failed to get all ideas: %v", err)}
 	}
-
-	return utils.Result[[]model.Idea]{Data: idea}
+	// Set Count for each idea
+	for i := range ideas {
+		ideas[i].Count = len(ideas[i].Votes)
+	}
+	return utils.Result[[]model.Idea]{Data: ideas}
 }
 
 func (ps *PostgresStore) GetIdea(id uuid.UUID) utils.Result[model.Idea] {
