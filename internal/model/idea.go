@@ -76,8 +76,6 @@ type UpdateIdeaPayload struct {
 
 type Vote struct {
 	ID        string    `json:"id"`
-	IdeaID    uuid.UUID `json:"idea_id"`
-	UserID    uuid.UUID `json:"user_id"`
 	User      User      `json:"user" gorm:"foreignKey:UserID"`
 	CreatedAt time.Time `json:"created_at"`
 }

@@ -12,8 +12,6 @@ import (
 func (ps *PostgresStore) AddVote(userID uuid.UUID, ideaID uuid.UUID) utils.Result[string] {
 	vote := model.Vote{
 		ID:        uuid.New().String(),
-		UserID:    userID,
-		IdeaID:    ideaID,
 		CreatedAt: time.Now(),
 	}
 	if err := ps.db.Create(&vote).Error; err != nil {
